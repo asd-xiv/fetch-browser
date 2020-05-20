@@ -1,7 +1,7 @@
 {
   "name": "@mutant-ws/fetch-browser",
   "version": "0.0.1",
-  "description": "Thin wrapper over fetch for Browser",
+  "description": "Thin wrapper over `window.fetch`",
   "license": "MIT",
   "homepage": "https://github.com/mutant-ws/fetch-browser",
   "repository": {

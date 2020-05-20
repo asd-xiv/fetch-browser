@@ -23,7 +23,7 @@ set({
     "Content-Type": "application/json",
   },
 
-  // Stringify for query params. No default provided. Throws if query params 
+  // Stringify for query params. No default provided. Throws if query params
   // passed and no stringify function defined.
   queryStringifyFn: source =>
     stringify(source, {
