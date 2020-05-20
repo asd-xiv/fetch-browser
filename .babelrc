@@ -1,0 +1,19 @@
+{
+  "presets": [
+    // Use the latest JavaScript without needing to micromanage which syntax
+    // transforms (and optionally, browser polyfills) are needed by your
+    // target environment.
+    //
+    // Uses .browserslistrc to determine what plugins to use.
+    //
+    // https://babeljs.io/docs/en/babel-preset-env
+    "@babel/preset-env",
+  ],
+
+  "plugins": [
+    // Enables the re-use of Babel's injected helper code to save on codesize
+    "@babel/plugin-transform-runtime",
+  ],
+}
+
+
