@@ -1,0 +1,117 @@
+# Javascript Node CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-javascript/ for more details
+#
+version: 2
+
+#
+# YAML variable templates
+#
+job_defaults: &job_defaults
+  working_directory: ~/fetch-browser
+  docker:
+    - image: circleci/node:lts
+
+job_filter: &job_filter
+  filters:
+    branches:
+      only:
+        - master
+
+#
+# Run all jobs in sequence
+#
+workflows:
+  version: 2
+  deploy_npm:
+    jobs:
+      - setup:
+          <<: *job_filter
+      - test:
+          <<: *job_filter
+          requires:
+            - setup
+      - coverage:
+          <<: *job_filter
+          requires:
+            - test
+      - publish:
+          <<: *job_filter
+          requires:
+            - coverage
+
+#
+# Define atomic jobs
+#
+jobs:
+  setup:
+    <<: *job_defaults
+
+    steps:
+      - checkout
+
+      - run:
+          name: "fetch-browser: Install npm packages"
+          command: "npm run setup:ci"
+
+      - run:
+          name: "fetch-browser: Babel build"
+          command: "npm run build"
+
+      - save_cache:
+          paths:
+            - node_modules
+            - src
+            - dist
+            - tests
+            - .git
+            - .babelrc
+            - .eslintrc
+            - .gitignore
+            - .prettierrc
+            - README.md
+            - CHANGELOG.md
+            - package-lock.json
+            - package.json
+          key: fetch-browser-{{ .Branch }}-{{ .Revision }}
+
+  test:
+    <<: *job_defaults
+
+    steps:
+      - restore_cache:
+          keys:
+            - fetch-browser-{{ .Branch }}-{{ .Revision }}
+
+      - run:
+          name: "fetch-browser: Run linter"
+          command: "npm run lint"
+
+      # - run:
+      #     name: "fetch-browser: Run tests"
+      #     command: "npm run test"
+
+  coverage:
+    <<: *job_defaults
+
+    steps:
+      - restore_cache:
+          keys:
+            - fetch-browser-{{ .Branch }}-{{ .Revision }}
+
+      # - run:
+      #     name: "fetch-browser: Publish test coverage to COVERALLS"
+      #     command: "npm run coverage:ci"
+
+  publish:
+    <<: *job_defaults
+
+    steps:
+      - restore_cache:
+          keys:
+            - fetch-browser-{{ .Branch }}-{{ .Revision }}
+
+      - run:
+          name: "fetch-browser: Release to npm with semantic-release"
+          command: "npx semantic-release"
+
