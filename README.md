@@ -2,29 +2,69 @@
 
 # fetch-browser
 
-Thin wrapper over `window.fetch`. Sister libray of [`@mutant-ws/fetch-node`](https://github.com/mutant-ws/fetch-node).
+Thin wrapper over [`window.fetch`](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API). Sister library of [`@mutant-ws/fetch-node`](https://github.com/mutant-ws/fetch-node).
 
-## `set`
+<!-- vim-markdown-toc GFM -->
+
+* [Install](#install)
+* [Initialize](#initialize)
+  * [Default headers](#default-headers)
+  * [Query string parameters](#query-string-parameters)
+* [`GET`](#get)
+* [`PATCH`](#patch)
+* [`POST`](#post)
+* [`DELETE`](#delete)
+* [`MULTIPART`](#multipart)
+* [Changelog](#changelog)
+
+<!-- vim-markdown-toc -->
+
+## Install
+
+```bash
+npm i @mutant-ws/fetch-browser
+```
+
+## Initialize
 
 ```javascript
 import { set } from "@mutant-ws/fetch-browser"
 
-// third party library for turning objects into query strings
-import { stringify } from "qs"
-
 set({
   // Throws if not set and using relative paths
   baseURL: "http://localhost",
+})
+```
 
-  // Default headers sent with every request
+### Default headers
+
+```javascript
+import { set } from "@mutant-ws/fetch-browser"
+
+set({
+  // Persistent headers
   headers: {
-    // these are already the default
-    "Accept": "application/json",
-    "Content-Type": "application/json",
-  },
+    // Library defaults
+    "accept": "application/json",
+    "content-type": "application/json",
 
-  // Stringify for query params. No default provided. Throws if query params
-  // passed and no stringify function defined.
+    // Set JWT for authorized requests
+    authorization: "signed-payload-with-base64-over",
+  },
+})
+```
+
+### Query string parameters
+
+There is no built-in way to handle query params but you can set a custom
+transform function.
+
+```javascript
+import { set } from "@mutant-ws/fetch-browser"
+import { stringify } from "qs"
+
+set({
+  // Throws if query params passed and no stringify function defined
   queryStringifyFn: source =>
     stringify(source, {
       allowDots: true,
@@ -33,10 +73,20 @@ set({
       strictNullHandling: true,
     })
 })
-
 ```
 
 ## `GET`
+
+```javascript
+import { GET } from "@mutant-ws/fetch-browser"
+
+const myIP = await GET("https://api.ipify.org", {
+  query: {
+    format: "json"
+  }
+})
+// => {"ip":"213.127.80.141"}
+```
 
 ## `PATCH`
 
@@ -45,15 +95,6 @@ set({
 ## `DELETE`
 
 ## `MULTIPART`
-
-<!-- vim-markdown-toc GFM -->
-
-* [About](#about)
-* [Changelog](#changelog)
-
-<!-- vim-markdown-toc -->
-
-## About
 
 ## Changelog
 

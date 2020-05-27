@@ -8,13 +8,13 @@
  * @param {Number}        opt.status Response status
  * @param {String|Object} opt.body   Response body
  */
-export function RequestError(message, { url, status, body }) {
+export function HTTPError(message, { url, status, body }) {
   this.message = `${status} Server error: ${message}`
-  this.name = "RequestError"
+  this.name = "HTTPError"
   this.body = body
   this.status = status
   this.url = url
   this.stack = new Error().stack
 }
 
-RequestError.prototype = new Error()
+HTTPError.prototype = new Error()

@@ -33,7 +33,7 @@ export const setProps = props => ({ baseURL, headers, queryStringifyFn }) => {
       props.baseURL = trim("/")(baseURL)
     } else {
       throw new TypeError(
-        `@mutant-ws/fetch-node: "baseURL" should be a string, received ${JSON.stringify(
+        `@mutant-ws/fetch-browser: "baseURL" should be a string, received ${JSON.stringify(
           baseURL
         )}`
       )

@@ -1,22 +1,23 @@
 /* eslint-disable import/exports-last */
 
+import RFC3986 from "rfc-3986"
 import {
+  get,
   pipe,
   reduce,
   startsWith,
   trim,
   when,
   same,
-  is,
+  toLower,
   isEmpty,
 } from "@mutant-ws/m"
 
 import { setProps } from "./fn.set-props"
-import { filterByValue } from "./fn.filter-by-value"
-import { RequestError } from "./fn.request-error"
+import { HTTPError } from "./fn.http-error"
 
 /**
- * Library options
+ * Config
  */
 const props = {
   baseURL: "",
@@ -28,7 +29,7 @@ const props = {
  * `window.fetch` with qs support, default headers and rejects on status
  * outside 200
  *
- * @param  {String} url         API endpoint
+ * @param  {String} path        API endpoint
  * @param  {String} opt.method  HTTP Method
  * @param  {Object} opt.headers HTTP Headers
  * @param  {Object} opt.body    HTTP Body
@@ -38,49 +39,77 @@ const props = {
  *                              Reject all other response codes.
  */
 const request = (
-  url,
-  { method, body = {}, headers = {}, query = {}, isFile = false } = {}
+  path,
+  { method, body = {}, headers = {}, query = {} } = {}
 ) => {
   if (!isEmpty(query) && isEmpty(props.queryStringifyFn)) {
     throw new TypeError(
-      `@mutant-ws/fetch-browser: ${method}:${url} - Trying to send query params but no "queryStringifyFn" provided.`
+      `@mutant-ws/fetch-browser: ${method}:${path} - Cannot send query params without providing "queryStringifyFn"`
     )
   }
 
-  const reqContent = {
-    method,
-    headers: filterByValue(is)({
-      Accept: "application/json",
-      "Content-Type": "application/json",
+  const isPathURI = new RegExp(RFC3986.uri).test(path)
+
+  if (isEmpty(props.baseURL) && !isPathURI) {
+    throw new TypeError(
+      `@mutant-ws/fetch-browser: ${method}:${path} - Cannot make request with non-absolute path and no "baseURL"`
+    )
+  }
+
+  // - Remove all undefined values
+  // - toLower all keys
+  const HEADERS = reduce(
+    (acc, [key, value]) =>
+      value === undefined
+        ? acc
+        : {
+            ...acc,
+            [toLower(key)]: value,
+          },
+    {}
+  )(
+    Object.entries({
+      accept: "application/json",
+      "content-type": "application/json",
       ...props.headers,
       ...headers,
-    }),
-  }
+    })
+  )
 
-  // Avoid "HEAD or GET Request cannot have a body"
-  if (method !== "GET") {
-    reqContent.body = isFile ? body : JSON.stringify(body)
-  }
+  const isReqJSON = pipe(
+    get("content-type"),
+    startsWith("application/json")
+  )(HEADERS)
 
-  const reqURL = pipe(
+  const URI = pipe(
     when(
       isEmpty,
-      same(url),
-      source => `${url}?${props.queryStringifyFn(source)}`
+      same(path),
+      source => `${path}?${props.queryStringifyFn(source)}`
     ),
     trim("/"),
-    source => `${props.baseURL}/${source}`
+    source => (isPathURI ? source : `${props.baseURL}/${source}`)
   )(query)
 
   return window
-    .fetch(reqURL, reqContent)
+    .fetch(URI, {
+      method,
+      headers: HEADERS,
+
+      // Avoid "HEAD or GET Request cannot have a body"
+      ...(method === "GET"
+        ? {}
+        : { body: isReqJSON ? JSON.stringify(body) : body }),
+    })
     .then(response => {
-      const isJSON = startsWith(
-        "application/json",
+      const isResJSON = startsWith("application/json")(
         response.headers.get("Content-Type")
       )
 
-      return Promise.all([response, isJSON ? response.json() : response.text()])
+      return Promise.all([
+        response,
+        isResJSON ? response.json() : response.text(),
+      ])
     })
     .then(([response, data]) => {
       /*
@@ -93,15 +122,15 @@ const request = (
         return data
       }
 
-      throw new RequestError(response.statusText, {
+      throw new HTTPError(response.statusText, {
         status: response.status,
         body: data,
-        url: reqURL,
+        path: URI,
       })
     })
 }
 
-export const set = () => setProps(props)
+export const set = setProps(props)
 
 export const GET = (url, { query, headers } = {}) =>
   request(url, { method: "GET", query, headers })
@@ -120,20 +149,16 @@ export const MULTIPART = (url, { body = {}, headers } = {}) => {
 
   return request(url, {
     method: "POST",
-    body: pipe(
-      Object.entries,
-      reduce((acc, [key, value]) => {
-        acc.append(key, value)
+    body: reduce((acc, [key, value]) => {
+      acc.append(key, value)
 
-        return acc
-      }, form)
-    )(body),
+      return acc
+    }, form)(Object.entries(body)),
     headers: {
       ...headers,
 
       // remove content-type header or browser boundery wont get set
       "Content-Type": null,
     },
-    isFile: true,
   })
 }
