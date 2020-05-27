@@ -77,7 +77,7 @@ const request = (
   )
 
   const isReqJSON = pipe(
-    get("content-type"),
+    get("content-type", ""),
     startsWith("application/json")
   )(HEADERS)
 
@@ -158,7 +158,7 @@ export const MULTIPART = (url, { body = {}, headers } = {}) => {
       ...headers,
 
       // remove content-type header or browser boundery wont get set
-      "Content-Type": undefined,
+      "content-type": undefined,
     },
   })
 }
