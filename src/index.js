@@ -162,3 +162,5 @@ export const MULTIPART = (url, { body = {}, headers } = {}) => {
     },
   })
 }
+
+export { HTTPError } from "./fn.http-error"
