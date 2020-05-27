@@ -29,7 +29,7 @@
     "----BUILD": "",
     "build": "rm -rf dist/* && babel src --out-dir dist",
     "prepare": "npm run build",
-    "prepublishOnly": "npm audit fix && npm test && npm run lint",
+    "prepublishOnly": "npm audit fix && npm run lint",
     "----LINT": "",
     "lint:md": "markdownlint *.md",
     "lint:js": "eslint --ext .jsx,.js src",
