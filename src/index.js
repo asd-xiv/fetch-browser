@@ -158,7 +158,7 @@ export const MULTIPART = (url, { body = {}, headers } = {}) => {
       ...headers,
 
       // remove content-type header or browser boundery wont get set
-      "Content-Type": null,
+      "Content-Type": undefined,
     },
   })
 }
