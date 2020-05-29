@@ -11,6 +11,7 @@ import {
   same,
   toLower,
   isEmpty,
+  is,
 } from "@mutant-ws/m"
 
 import { setProps } from "./fn.set-props"
@@ -60,12 +61,12 @@ const request = (
   // - toLower all keys
   const HEADERS = reduce(
     (acc, [key, value]) =>
-      value === undefined
-        ? acc
-        : {
+      is(value)
+        ? {
             ...acc,
             [toLower(key)]: value,
-          },
+          }
+        : acc,
     {}
   )(
     Object.entries({
