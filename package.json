@@ -42,11 +42,11 @@
     "rfc-3986": "^1.0.1"
   },
   "devDependencies": {
-    "@babel/cli": "^7.10.0",
-    "@babel/core": "^7.10.0",
-    "@babel/plugin-transform-runtime": "^7.10.0",
-    "@babel/preset-env": "^7.10.0",
-    "@babel/register": "^7.9.0",
+    "@babel/cli": "^7.10.1",
+    "@babel/core": "^7.10.1",
+    "@babel/plugin-transform-runtime": "^7.10.1",
+    "@babel/preset-env": "^7.10.1",
+    "@babel/register": "^7.10.1",
     "@mutant-ws/eslint-config": "^5.10.0",
     "babel-eslint": "^10.1.0",
     "eslint": "^7.1.0",
