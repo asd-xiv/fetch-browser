@@ -1,4 +1,4 @@
-import { trim, is, isObject } from "@mutant-ws/m"
+import { trim, is, isObject } from "@asd14/m"
 
 export const setProps = props => ({ baseURL, headers, queryStringifyFn }) => {
   if (is(queryStringifyFn)) {
@@ -6,7 +6,7 @@ export const setProps = props => ({ baseURL, headers, queryStringifyFn }) => {
       props.queryStringifyFn = queryStringifyFn
     } else {
       throw new TypeError(
-        `@mutant-ws/fetch-browser: "queryStringifyFn" should be a function, received ${JSON.stringify(
+        `@asd14/fetch-browser: "queryStringifyFn" should be a function, received ${JSON.stringify(
           queryStringifyFn
         )}`
       )
@@ -21,7 +21,7 @@ export const setProps = props => ({ baseURL, headers, queryStringifyFn }) => {
       }
     } else {
       throw new TypeError(
-        `@mutant-ws/fetch-browser: "headers" should be an object, received ${JSON.stringify(
+        `@asd14/fetch-browser: "headers" should be an object, received ${JSON.stringify(
           headers
         )}`
       )
@@ -33,7 +33,7 @@ export const setProps = props => ({ baseURL, headers, queryStringifyFn }) => {
       props.baseURL = trim("/")(baseURL)
     } else {
       throw new TypeError(
-        `@mutant-ws/fetch-browser: "baseURL" should be a string, received ${JSON.stringify(
+        `@asd14/fetch-browser: "baseURL" should be a string, received ${JSON.stringify(
           baseURL
         )}`
       )

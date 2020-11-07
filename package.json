@@ -1,19 +1,19 @@
 {
-  "name": "@mutant-ws/fetch-browser",
+  "name": "@asd14/fetch-browser",
   "version": "0.0.1",
   "description": "Thin wrapper over `window.fetch`",
   "license": "MIT",
-  "homepage": "https://github.com/mutant-ws/fetch-browser",
+  "homepage": "https://github.com/asd-xiv/fetch-browser",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mutant-ws/fetch-browser.git"
+    "url": "git+https://github.com/asd-xiv/fetch-browser.git"
   },
   "bugs": {
-    "url": "https://github.com/mutant-ws/fetch-browser/issues"
+    "url": "https://github.com/asd-xiv/fetch-browser/issues"
   },
   "author": {
     "name": "Andrei Dumitrescu",
-    "url": "https://github.com/andreid-asd"
+    "url": "https://github.com/andreidmt"
   },
   "main": "dist/index.js",
   "keywords": [
@@ -38,31 +38,31 @@
     "test": "node tests/index.js"
   },
   "dependencies": {
-    "@mutant-ws/m": "^1.16.0",
+    "@asd14/m": "^3.2.0",
     "rfc-3986": "^1.0.1"
   },
   "devDependencies": {
-    "@babel/cli": "^7.10.5",
-    "@babel/core": "^7.11.0",
-    "@babel/plugin-transform-runtime": "^7.11.0",
-    "@babel/preset-env": "^7.11.0",
-    "@babel/register": "^7.10.5",
-    "@mutant-ws/eslint-config": "^5.11.0",
+    "@asd14/eslint-config": "^5.17.0",
+    "@babel/cli": "^7.12.1",
+    "@babel/core": "^7.12.3",
+    "@babel/plugin-transform-runtime": "^7.12.1",
+    "@babel/preset-env": "^7.12.1",
+    "@babel/register": "^7.12.1",
     "babel-eslint": "^10.1.0",
-    "eslint": "^7.6.0",
-    "eslint-config-prettier": "^6.11.0",
-    "eslint-plugin-html": "^6.0.2",
-    "eslint-plugin-import": "^2.22.0",
+    "eslint": "^7.13.0",
+    "eslint-config-prettier": "^6.15.0",
+    "eslint-plugin-html": "^6.1.0",
+    "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-json": "^2.1.2",
     "eslint-plugin-no-inferred-method-name": "^2.0.0",
     "eslint-plugin-prettier": "^3.1.4",
     "eslint-plugin-promise": "^4.2.1",
-    "eslint-plugin-unicorn": "^21.0.0",
+    "eslint-plugin-unicorn": "^23.0.0",
     "http-server": "^0.12.3",
-    "markdownlint-cli": "^0.23.2",
+    "markdownlint-cli": "^0.24.0",
     "npm-check": "^5.9.2",
-    "prettier": "^2.0.5",
-    "semantic-release": "^17.1.1",
-    "testcafe": "^1.8.8"
+    "prettier": "^2.1.2",
+    "semantic-release": "^17.2.2",
+    "testcafe": "^1.9.4"
   }
 }

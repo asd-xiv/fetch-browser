@@ -12,7 +12,7 @@ import {
   toLower,
   isEmpty,
   is,
-} from "@mutant-ws/m"
+} from "@asd14/m"
 
 import { setProps } from "./fn.set-props"
 import { HTTPError } from "./fn.http-error"
@@ -45,7 +45,7 @@ const request = (
 ) => {
   if (!isEmpty(query) && isEmpty(props.queryStringifyFn)) {
     throw new TypeError(
-      `@mutant-ws/fetch-browser: ${method}:${path} - Cannot send query params without providing "queryStringifyFn"`
+      `@asd14/fetch-browser: ${method}:${path} - Cannot send query params without providing "queryStringifyFn"`
     )
   }
 
@@ -53,7 +53,7 @@ const request = (
 
   if (isEmpty(props.baseURL) && !isPathURI) {
     throw new TypeError(
-      `@mutant-ws/fetch-browser: ${method}:${path} - Cannot make request with non-absolute path and no "baseURL"`
+      `@asd14/fetch-browser: ${method}:${path} - Cannot make request with non-absolute path and no "baseURL"`
     )
   }
 

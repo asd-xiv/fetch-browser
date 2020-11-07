@@ -2,7 +2,7 @@
 
 # fetch-browser
 
-Thin wrapper over [`window.fetch`](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API). Sister library of [`@mutant-ws/fetch-node`](https://github.com/mutant-ws/fetch-node).
+Thin wrapper over [`window.fetch`](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API). Sister library of [`@asd14/fetch-node`](https://github.com/asd-xiv/fetch-node).
 
 <!-- vim-markdown-toc GFM -->
 
@@ -22,13 +22,13 @@ Thin wrapper over [`window.fetch`](https://developer.mozilla.org/en-US/docs/Web/
 ## Install
 
 ```bash
-npm i @mutant-ws/fetch-browser
+npm i @asd14/fetch-browser
 ```
 
 ## Initialize
 
 ```javascript
-import { set } from "@mutant-ws/fetch-browser"
+import { set } from "@asd14/fetch-browser"
 
 set({
   // Throws if not set and using relative paths
@@ -39,7 +39,7 @@ set({
 ### Default headers
 
 ```javascript
-import { set } from "@mutant-ws/fetch-browser"
+import { set } from "@asd14/fetch-browser"
 
 set({
   // Persistent headers
@@ -60,7 +60,7 @@ There is no built-in way to handle query params but you can set a custom
 transform function.
 
 ```javascript
-import { set } from "@mutant-ws/fetch-browser"
+import { set } from "@asd14/fetch-browser"
 import { stringify } from "qs"
 
 set({
@@ -78,7 +78,7 @@ set({
 ## `GET`
 
 ```javascript
-import { GET } from "@mutant-ws/fetch-browser"
+import { GET } from "@asd14/fetch-browser"
 
 const myIP = await GET("https://api.ipify.org", {
   query: {
@@ -98,4 +98,4 @@ const myIP = await GET("https://api.ipify.org", {
 
 ## Changelog
 
-See the [releases section](https://github.com/mutant-ws/fetch-browser/releases) for details.
+See the [releases section](https://github.com/asd-xiv/fetch-browser/releases) for details.
