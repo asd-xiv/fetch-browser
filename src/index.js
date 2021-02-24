@@ -10,48 +10,46 @@ import {
   when,
   same,
   toLower,
-  isEmpty,
   is,
+  isEmpty,
+  isObject,
 } from "@asd14/m"
 
-import { setProps } from "./fn.set-props"
-import { HTTPError } from "./fn.http-error"
+import { HTTPError } from "./http-error"
 
-/**
- * Config
- */
-const props = {
+const state = {
   baseURL: "",
   headers: {},
-  queryStringifyFn: null,
+  stringifyQueryParams: undefined,
 }
 
 /**
- * `window.fetch` with qs support, default headers and rejects on status
- * outside 200
+ * `window.fetch` with query string parsing support, default headers and base
+ * URL for relative paths.
  *
- * @param  {String} path        API endpoint
- * @param  {String} opt.method  HTTP Method
- * @param  {Object} opt.headers HTTP Headers
- * @param  {Object} opt.body    HTTP Body
- * @param  {Object} opt.query   Query params
+ * Resolves with response object if code is 200, reject all other response codes.
  *
- * @return {Promise}            Resolves with response object if code is 20*.
- *                              Reject all other response codes.
+ * @param {string} path
+ * @param {string} props.method
+ * @param {Object} props.headers
+ * @param {Object} props.body
+ * @param {Object} props.query
+ *
+ * @returns {Promise}
  */
 const request = (
   path,
   { method, body = {}, headers = {}, query = {} } = {}
 ) => {
-  if (!isEmpty(query) && isEmpty(props.queryStringifyFn)) {
+  if (!isEmpty(query) && isEmpty(state.stringifyQueryParams)) {
     throw new TypeError(
-      `@asd14/fetch-browser: ${method}:${path} - Cannot send query params without providing "queryStringifyFn"`
+      `@asd14/fetch-browser: ${method}:${path} - Cannot send query params without providing "stringifyQueryParams"`
     )
   }
 
   const isPathURI = new RegExp(RFC3986.uri).test(path)
 
-  if (isEmpty(props.baseURL) && !isPathURI) {
+  if (isEmpty(state.baseURL) && !isPathURI) {
     throw new TypeError(
       `@asd14/fetch-browser: ${method}:${path} - Cannot make request with non-absolute path and no "baseURL"`
     )
@@ -60,24 +58,24 @@ const request = (
   // - Remove all undefined values
   // - toLower all keys
   const HEADERS = reduce(
-    (acc, [key, value]) =>
+    (accumulator, [key, value]) =>
       is(value)
         ? {
-            ...acc,
+            ...accumulator,
             [toLower(key)]: value,
           }
-        : acc,
+        : accumulator,
     {}
   )(
     Object.entries({
       accept: "application/json",
       "content-type": "application/json",
-      ...props.headers,
+      ...state.headers,
       ...headers,
     })
   )
 
-  const isReqJSON = pipe(
+  const isRequestJSON = pipe(
     get("content-type", ""),
     startsWith("application/json")
   )(HEADERS)
@@ -86,10 +84,10 @@ const request = (
     when(
       isEmpty,
       same(path),
-      source => `${path}?${props.queryStringifyFn(source)}`
+      source => `${path}?${state.stringifyQueryParams(source)}`
     ),
     trim("/"),
-    source => (isPathURI ? source : `${props.baseURL}/${source}`)
+    source => (isPathURI ? source : `${state.baseURL}/${source}`)
   )(query)
 
   return window
@@ -100,16 +98,16 @@ const request = (
       // Avoid "HEAD or GET Request cannot have a body"
       ...(method === "GET"
         ? {}
-        : { body: isReqJSON ? JSON.stringify(body) : body }),
+        : { body: isRequestJSON ? JSON.stringify(body) : body }),
     })
     .then(response => {
-      const isResJSON = startsWith("application/json")(
+      const isResponseJSON = startsWith("application/json")(
         response.headers.get("Content-Type")
       )
 
       return Promise.all([
         response,
-        isResJSON ? response.json() : response.text(),
+        isResponseJSON ? response.json() : response.text(),
       ])
     })
     .then(([response, data]) => {
@@ -131,7 +129,46 @@ const request = (
     })
 }
 
-export const set = setProps(props)
+export const setup = ({ baseURL, headers, stringifyQueryParams }) => {
+  if (is(stringifyQueryParams)) {
+    if (typeof stringifyQueryParams === "function") {
+      state.stringifyQueryParams = stringifyQueryParams
+    } else {
+      throw new TypeError(
+        `@asd14/fetch-browser: "stringifyQueryParams" should be a function, received ${JSON.stringify(
+          stringifyQueryParams
+        )}`
+      )
+    }
+  }
+
+  if (is(headers)) {
+    if (isObject(headers)) {
+      state.headers = {
+        ...state.headers,
+        ...headers,
+      }
+    } else {
+      throw new TypeError(
+        `@asd14/fetch-browser: "headers" should be an object, received ${JSON.stringify(
+          headers
+        )}`
+      )
+    }
+  }
+
+  if (is(baseURL)) {
+    if (typeof baseURL === "string") {
+      state.baseURL = trim("/")(baseURL)
+    } else {
+      throw new TypeError(
+        `@asd14/fetch-browser: "baseURL" should be a string, received ${JSON.stringify(
+          baseURL
+        )}`
+      )
+    }
+  }
+}
 
 export const GET = (url, { query, headers } = {}) =>
   request(url, { method: "GET", query, headers })
@@ -150,10 +187,10 @@ export const MULTIPART = (url, { body = {}, headers } = {}) => {
 
   return request(url, {
     method: "POST",
-    body: reduce((acc, [key, value]) => {
-      acc.append(key, value)
+    body: reduce((accumulator, [key, value]) => {
+      accumulator.append(key, value)
 
-      return acc
+      return accumulator
     }, form)(Object.entries(body)),
     headers: {
       ...headers,
@@ -164,4 +201,4 @@ export const MULTIPART = (url, { body = {}, headers } = {}) => {
   })
 }
 
-export { HTTPError } from "./fn.http-error"
+export { HTTPError } from "./http-error"
