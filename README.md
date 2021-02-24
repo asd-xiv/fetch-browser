@@ -28,9 +28,9 @@ npm i @asd14/fetch-browser
 ## Initialize
 
 ```javascript
-import { set } from "@asd14/fetch-browser"
+import { setup } from "@asd14/fetch-browser"
 
-set({
+setup({
   // Throws if not set and using relative paths
   baseURL: "http://localhost",
 })
@@ -39,9 +39,9 @@ set({
 ### Default headers
 
 ```javascript
-import { set } from "@asd14/fetch-browser"
+import { setup } from "@asd14/fetch-browser"
 
-set({
+setup({
   // Persistent headers
   headers: {
     // Library defaults
@@ -60,12 +60,12 @@ There is no built-in way to handle query params but you can set a custom
 transform function.
 
 ```javascript
-import { set } from "@asd14/fetch-browser"
+import { setup } from "@asd14/fetch-browser"
 import { stringify } from "qs"
 
-set({
+setup({
   // Throws if query params passed and no stringify function defined
-  queryStringifyFn: source =>
+  stringifyQueryParams: source =>
     stringify(source, {
       allowDots: true,
       encode: false,
