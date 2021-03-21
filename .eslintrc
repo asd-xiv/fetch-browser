@@ -2,13 +2,13 @@
   "parser": "babel-eslint",
   "root": true,
   "extends": [
-    "@asd14/eslint-config/targets/html",
+    "@asd14/eslint-config/targets/html"
   ],
 
   "globals": {
-    require: true,
-    fixture: true,
-    test: true
+    "require": true,
+    "fixture": true,
+    "test": true
   },
 
   "rules": {
@@ -22,7 +22,7 @@
   "settings": {
     // Recommended if you use eslint_d
     "import/cache": {
-      "lifetime": 5,
-    },
+      "lifetime": 5
+    }
   }
 }
