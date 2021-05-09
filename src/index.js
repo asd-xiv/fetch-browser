@@ -30,6 +30,7 @@ const state = {
  * Resolves with response object if code is 200, reject all other response codes.
  *
  * @param {string} path
+ * @param {Object} props
  * @param {string} props.method
  * @param {Object} props.headers
  * @param {Object} props.body
